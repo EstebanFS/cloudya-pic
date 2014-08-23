@@ -1,7 +1,13 @@
 <?php
+    include "/../controllers/user_controller.php";
     if (isset($_POST["password"]) && isset($_POST["username"]) &&
         isset($_POST["email"])    && isset($_POST["confirmpassword"])) {
-        $registered = true;
+        $registered = user_controller::create_user($_POST["username"],
+                                                   $_POST["email"],
+                                                   $_POST["password"]);
+        if ($registered == 1) $message = "User already exists, please try another one.";
+        if ($registered == 2) $message = "Internal error, please try again later.";
+        if ($registered == 3) $message = "You have registered successfully.";
     }
 ?>
 
@@ -124,10 +130,11 @@
                         <br>
                         <div id="success">
                             <?php
-                                if (isset($registered) && $registered) {
-                                    echo "<div class=\"alert alert-success\">";
+                                if (isset($registered)) {
+                                    if ($registered == 3) echo "<div class=\"alert alert-success\">";
+                                    else echo "<div class=\"alert alert-danger\">";
                                     echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                                    echo "  <strong>You have registered successfully.</strong>";
+                                    echo "  <strong>".$message."</strong>";
                                     echo "</div>";
                                 }
                             ?>
