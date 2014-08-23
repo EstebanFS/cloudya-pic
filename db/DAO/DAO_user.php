@@ -25,5 +25,15 @@ class DAO_user{
     return $result;
   }
 
+ function DAO_login($username,$pwd){
+    $con = connect();
+    $sql = "SELECT id FROM user WHERE username='$username' AND password='$pwd'";
+    $arr_res = mysql_query($sql); // or die(mysql_error());
+    $result = false;
+    if (mysql_num_rows($arr_res) == 1) $result = true;     
+    disconnect($con);
+    return $result;
+  }
+
 }
 ?>
