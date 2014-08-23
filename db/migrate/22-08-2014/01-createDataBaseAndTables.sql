@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1:8888
--- Tiempo de generación: 23-08-2014 a las 06:48:36
+-- Tiempo de generación: 23-08-2014 a las 17:52:15
 -- Versión del servidor: 5.5.32
 -- Versión de PHP: 5.4.19
 
@@ -29,10 +29,10 @@ USE `cloudyapicdb`;
 --
 
 CREATE TABLE IF NOT EXISTS `hashtag` (
-  `id` int(10) NOT NULL,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
   `description` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -41,13 +41,13 @@ CREATE TABLE IF NOT EXISTS `hashtag` (
 --
 
 CREATE TABLE IF NOT EXISTS `image` (
-  `id` int(10) NOT NULL,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
   `resource` blob NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -69,13 +69,13 @@ CREATE TABLE IF NOT EXISTS `image_hashtag` (
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id` int(10) NOT NULL,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
   `username` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=24 ;
 
 -- --------------------------------------------------------
 

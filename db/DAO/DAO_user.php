@@ -1,6 +1,7 @@
 <?php
 
 include "/../environment.php";
+require_once('/../../config/globals.php');
 
 class DAO_user{
 
@@ -25,9 +26,10 @@ class DAO_user{
     return $result;
   }
 
- function DAO_login($username,$pwd){
+ function DAO_login($username, $pwd){
     $con = connect();
     $sql = "SELECT id FROM user WHERE username='$username' AND password='$pwd'";
+    echo $sql;
     $arr_res = mysql_query($sql); // or die(mysql_error());
     $result = false;
     if (mysql_num_rows($arr_res) == 1) $result = true;     

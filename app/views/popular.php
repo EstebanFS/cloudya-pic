@@ -1,5 +1,8 @@
 <?php
+session_start();
 
+include "/../controllers/user_controller.php";
+require_once('/../../config/globals.php');
 ?>
 <html lang="en">
 
@@ -57,12 +60,21 @@
                     <li class="page-scroll">
                         <a href="#page-top">Popular</a>
                     </li>
-                    <li class="page-scroll">
-                        <a href="login.php">Sign in</a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="register.php">Sign up</a>
-                    </li>
+                    <?php
+                        if (isset($_SESSION["username"])) {
+                            echo "<li class=\"page-scroll\">";
+                            echo "  <a href=\"../../index.php?logout=true\">Log out</a>";
+                            echo "</li>";
+                        }
+                        else {
+                            echo "<li class=\"page-scroll\">";
+                            echo "  <a href=\"login.php\">Sign in</a>";
+                            echo "</li>";
+                            echo "<li class=\"page-scroll\">";
+                            echo "  <a href=\"register.php\">Sign up</a>";
+                            echo "</li>";
+                        }
+                    ?>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->

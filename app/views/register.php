@@ -4,6 +4,12 @@ session_start();
 include "/../controllers/user_controller.php";
 require_once('/../../config/globals.php');
 
+//If session is opened, redirect to index
+if (isset($_SESSION["username"])) {
+    loadPage("../../index.php");
+}
+
+//Continue with register
 if (isset($_POST["password"]) && isset($_POST["username"]) &&
     isset($_POST["email"])    && isset($_POST["confirmpassword"])) {
     $registered = user_controller::create_user($_POST["username"],

@@ -97,12 +97,13 @@ if (isset($_GET["logout"])) {
                 <div class="col-lg-12">
                     <div id="success">
                         <?php
-                            if (isset($_SESSION["registered"])) {
-                                if ($_SESSION["registered"] == 3) echo "<div class=\"alert alert-success\">";
-                                else echo "<div class=\"alert alert-danger\">";
+                            if (isset($_SESSION["registered"]) && $_SESSION["registered"] == 3) {
+                                echo "<div class=\"alert alert-success\">";
                                 echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
                                 echo "  <strong>".$_SESSION["message"]."</strong>";
                                 echo "</div>";
+                                unset($_SESSION["registered"]);
+                                unset($_SESSION["message"]);
                             }
                         ?>
                     </div>

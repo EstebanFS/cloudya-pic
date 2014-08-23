@@ -1,10 +1,25 @@
 <?php
-
 session_start();
+
 include "/../controllers/user_controller.php";
 require_once('/../../config/globals.php');
 
+//If session is opened, redirect to index
+if (isset($_SESSION["username"])) {
+    loadPage("../../index.php");
+}
 
+//Continue with login
+if (isset($_POST["username"]) && isset($_POST["password"])) {
+    $logged = user_controller::login($_POST["username"],
+                                     $_POST["password"]);
+    if ($logged == 1) $message = "User doesn't exist.";
+    if ($logged == 2) $message = "Password is incorrect.";
+    if ($logged == 3) {
+        $_SESSION["username"]   = $_POST["username"];
+        loadPage('../../index.php');
+    }
+}
 ?>
 <html lang="en">
 
@@ -90,6 +105,16 @@ require_once('/../../config/globals.php');
             </div>
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2">
+                    <div id="success">
+                        <?php
+                            if (isset($logged)) {
+                                echo "<div class=\"alert alert-danger\">";
+                                echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                                echo "  <strong>".$message."</strong>";
+                                echo "</div>";
+                            }
+                        ?>
+                    </div>
                     <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
                     <!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. -->
                     <form action="login.php" method="post" name="login" novalidate>
