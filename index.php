@@ -1,5 +1,14 @@
 <?php
 
+session_start();
+require_once('config/globals.php');
+
+//Checking if user requested to log out
+if (isset($_GET["logout"])) {
+    session_destroy();
+    loadPage('index.php');
+}
+
 ?>
 
 <html lang="en">
@@ -59,12 +68,21 @@
                     <li class="page-scroll">
                         <a href="app/views/popular.php">Popular</a>
                     </li>
-                    <li class="page-scroll">
-                        <a href="app/views/login.php">Sign in</a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="app/views/register.php">Sign up</a>
-                    </li>
+                    <?php
+                        if (isset($_SESSION["username"])) {
+                            echo "<li class=\"page-scroll\">";
+                            echo "  <a href=\"index.php?logout=true\">Log out</a>";
+                            echo "</li>";
+                        }
+                        else {
+                            echo "<li class=\"page-scroll\">";
+                            echo "  <a href=\"app/views/login.php\">Sign in</a>";
+                            echo "</li>";
+                            echo "<li class=\"page-scroll\">";
+                            echo "  <a href=\"app/views/register.php\">Sign up</a>";
+                            echo "</li>";
+                        }
+                    ?>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -77,6 +95,17 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
+                    <div id="success">
+                        <?php
+                            if (isset($_SESSION["registered"])) {
+                                if ($_SESSION["registered"] == 3) echo "<div class=\"alert alert-success\">";
+                                else echo "<div class=\"alert alert-danger\">";
+                                echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                                echo "  <strong>".$_SESSION["message"]."</strong>";
+                                echo "</div>";
+                            }
+                        ?>
+                    </div>
                     <img class="img-responsive" src="app/assets/images/profile.png" alt="">
                     <div class="intro-text">
                         <span class="name">Start Bootstrap</span>

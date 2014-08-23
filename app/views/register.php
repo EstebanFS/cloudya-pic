@@ -1,14 +1,25 @@
 <?php
-    include "/../controllers/user_controller.php";
-    if (isset($_POST["password"]) && isset($_POST["username"]) &&
-        isset($_POST["email"])    && isset($_POST["confirmpassword"])) {
-        $registered = user_controller::create_user($_POST["username"],
-                                                   $_POST["email"],
-                                                   $_POST["password"]);
-        if ($registered == 1) $message = "User already exists, please try another one.";
-        if ($registered == 2) $message = "Internal error, please try again later.";
-        if ($registered == 3) $message = "You have registered successfully.";
+session_start();
+
+include "/../controllers/user_controller.php";
+require_once('/../../config/globals.php');
+
+if (isset($_POST["password"]) && isset($_POST["username"]) &&
+    isset($_POST["email"])    && isset($_POST["confirmpassword"])) {
+    $registered = user_controller::create_user($_POST["username"],
+                                               $_POST["email"],
+                                               $_POST["password"]);
+    if ($registered == 1) $message = "User already exists, please try another one.";
+    if ($registered == 2) $message = "Internal error, please try again later.";
+    if ($registered == 3) {
+        $message = "You have registered successfully.";
+        $_SESSION["username"]   = $_POST["username"];
+        $_SESSION["email"]      = $_POST["email"];
+        $_SESSION["registered"] = $registered;
+        $_SESSION["message"]    = $message;
+        loadPage('../../index.php');
     }
+}
 ?>
 
 <html lang="en">
@@ -95,9 +106,20 @@
             </div>
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2">
+                    <div id="success">
+                        <?php
+                            if (isset($registered)) {
+                                if ($registered == 3) echo "<div class=\"alert alert-success\">";
+                                else echo "<div class=\"alert alert-danger\">";
+                                echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                                echo "  <strong>".$message."</strong>";
+                                echo "</div>";
+                            }
+                        ?>
+                    </div>
                     <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
                     <!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. -->
-                    <form action="register.php" method="post" name="register" id="contactForm" novalidate>
+                    <form action="register.php" method="post" name="register" novalidate>
                         <div class="row control-group">
                             <div class="form-group col-xs-12 floating-label-form-group controls">
                                 <label>Username</label>
@@ -128,17 +150,6 @@
                             </div>
                         </div>
                         <br>
-                        <div id="success">
-                            <?php
-                                if (isset($registered)) {
-                                    if ($registered == 3) echo "<div class=\"alert alert-success\">";
-                                    else echo "<div class=\"alert alert-danger\">";
-                                    echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
-                                    echo "  <strong>".$message."</strong>";
-                                    echo "</div>";
-                                }
-                            ?>
-                        </div>
                         <div class="row">
                             <div class="form-group col-xs-12">
                                 <button type="submit" class="btn btn-success btn-lg">Register</button>
