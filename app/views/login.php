@@ -65,7 +65,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.php">CloudYa-Pic</a>
+                <a class="navbar-brand" href="../../index.php">CloudYa-<span style="color:#18bc9c">Pic</span></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->

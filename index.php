@@ -56,7 +56,8 @@ if (isset($_GET["logout"])) {
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#page-top">CloudYa-Pic</a>
+                <a class="navbar-brand" href="#page-top">CloudYa-<span style="color:#18bc9c">Pic</span></a>
+                <!--<img src="app/assets/images/logo.png" class="img-responsive" alt="logo">-->
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -71,7 +72,7 @@ if (isset($_GET["logout"])) {
                     <?php
                         if (isset($_SESSION["username"])) {
                             echo "<li class=\"page-scroll\">";
-                            echo "  <a href=\"index.php?logout=true\">Log out</a>";
+                            echo "  <a href=\"index.php?logout=true\">Log out<font color=\"white\" size=\"1\"> (".$_SESSION["username"].")</font></a>";
                             echo "</li>";
                         }
                         else {
@@ -109,9 +110,9 @@ if (isset($_GET["logout"])) {
                     </div>
                     <img class="img-responsive" src="app/assets/images/profile.png" alt="">
                     <div class="intro-text">
-                        <span class="name">Start Bootstrap</span>
+                        <span class="name">Take your photos.<br>upload your life.</span>
                         <hr class="star-light">
-                        <span class="skills">Web Developer - Graphic Artist - User Experience Designer</span>
+                        <span class="skills" align="justify">CloudYa-Pic is a website designed for you, where you can upload and share your best photos with the world. Upload your best moments, thoughts, feelings, favourite foods or anything you can imagine! Remember that you can also download the most popular pictures for free!</span>
                     </div>
                 </div>
             </div>
