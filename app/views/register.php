@@ -156,7 +156,7 @@ if (isset($_POST["password"]) && isset($_POST["username"]) &&
                             </div>
                         </div>
                         <br>
-                        <div class="row">
+                        <div class="row" align="center">
                             <div class="form-group col-xs-12">
                                 <button type="submit" class="btn btn-success btn-lg">Register</button>
                             </div>

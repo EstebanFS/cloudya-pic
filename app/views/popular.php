@@ -63,6 +63,9 @@ require_once('/../../config/globals.php');
                     <?php
                         if (isset($_SESSION["username"])) {
                             echo "<li class=\"page-scroll\">";
+                            echo "  <a href=\"upload.php\">Upload</a>";
+                            echo "</li>";
+                            echo "<li class=\"page-scroll\">";
                             echo "  <a href=\"../../index.php?logout=true\">Log out<font color=\"white\" size=\"1\"> (".$_SESSION["username"].")</font></a>";
                             echo "</li>";
                         }

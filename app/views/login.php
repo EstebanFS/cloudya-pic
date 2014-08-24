@@ -134,7 +134,8 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                         </div>
                         <br>
                         <div id="success"></div>
-                        <div class="row">
+                        <br>
+                        <div class="row" align="center">
                             <div class="form-group col-xs-12">
                                 <button type="submit" class="btn btn-success btn-lg">Log in</button>
                             </div>

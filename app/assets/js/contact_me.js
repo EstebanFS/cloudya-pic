@@ -1,6 +1,6 @@
 
 $(function () { 
-    $("input").not("[type=submit]").jqBootstrapValidation();
+    $("input,textarea").not("[type=submit]").jqBootstrapValidation();
 });
 
 /*$(function() {
