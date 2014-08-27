@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include "/../controllers/user_controller.php";
+include "/../controllers/image_controller.php";
 require_once('/../../config/globals.php');
 
 //If session is opened, redirect to index
@@ -12,16 +12,13 @@ if (!isset($_SESSION["username"])) {
 //Method to receive data of the image and send it to controller
 if (isset($_POST["title"]) && isset($_POST["description"]) &&
     isset($_FILES["image"]) && isset($_POST["tags"])) {
-  //$user = $_SESSION["user_id"]; user_id doesn't already exist in SESSION
+  $user = $_SESSION["user_id"]; //user_id doesn't already exist in SESSION
   $title = $_POST["title"];
   $desc = $_POST["description"];
-
+  $image = $_FILES["image"];
   $tags = $_POST["tags"];
   $tags = explode(",", $tags);
-  
-  $image = $_FILES["image"];
-  // ...
-  // ...
+  $added = image_controller::upload_image($user, $title, $desc, $image, $tags);
 }
 ?>
 
@@ -123,6 +120,22 @@ if (isset($_POST["title"]) && isset($_POST["description"]) &&
           <div class="row">
               <div class="col-lg-8 col-lg-offset-2">
                   <div id="success">
+                    <?php
+                      if (isset($added)) {
+                        if ($added) {
+                          echo "<div class=\"alert alert-success\">";
+                          echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                          echo "  <strong>Image uploaded successfully!</strong>";
+                          echo "</div>";
+                        }
+                        else {
+                          echo "<div class=\"alert alert-danger\">";
+                          echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                          echo "  <strong>Your image couldn't be uploaded, please try again.</strong>";
+                          echo "</div>";
+                        }
+                      }
+                    ?>
                   </div>
                   <form action="upload.php" method="post" name="upload" enctype="multipart/form-data" novalidate>
                       <div class="row control-group">

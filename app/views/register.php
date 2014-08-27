@@ -15,14 +15,15 @@ if (isset($_POST["password"]) && isset($_POST["username"]) &&
     $registered = user_controller::create_user($_POST["username"],
                                                $_POST["email"],
                                                $_POST["password"]);
-    if ($registered == 1) $message = "User already exists, please try another one.";
-    if ($registered == 2) $message = "Internal error, please try again later.";
-    if ($registered == 3) {
+    if ($registered == -1) $message = "User already exists, please try another one.";
+    else if ($registered == -2) $message = "Internal error, please try again later.";
+    else {
         $message = "You have registered successfully.";
         $_SESSION["username"]   = $_POST["username"];
         $_SESSION["email"]      = $_POST["email"];
         $_SESSION["registered"] = $registered;
         $_SESSION["message"]    = $message;
+        $_SESSION["user_id"]    = $registered;
         loadPage('../../index.php');
     }
 }

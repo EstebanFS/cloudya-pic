@@ -19,9 +19,9 @@ class DAO_user{
     $con = connect();
     $sql = "INSERT INTO user (username, email, password) VALUES ('$username','$email','$pwd')";
     if (mysql_query($sql)) {  //or die(mysql_error());
-      $result = true;
+      $result = mysql_insert_id();
     }
-    else $result = false;    
+    else $result = -1;    
     disconnect($con);
     return $result;
   }
@@ -31,8 +31,11 @@ class DAO_user{
     $sql = "SELECT id FROM user WHERE username='$username' AND password='$pwd'";
     echo $sql;
     $arr_res = mysql_query($sql); // or die(mysql_error());
-    $result = false;
-    if (mysql_num_rows($arr_res) == 1) $result = true;     
+    $result = -1;
+    if (mysql_num_rows($arr_res) == 1) {
+      $result = mysql_fetch_array($arr_res);
+      $result = $result["id"];     
+    }
     disconnect($con);
     return $result;
   }

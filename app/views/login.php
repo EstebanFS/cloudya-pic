@@ -13,10 +13,11 @@ if (isset($_SESSION["username"])) {
 if (isset($_POST["username"]) && isset($_POST["password"])) {
     $logged = user_controller::login($_POST["username"],
                                      $_POST["password"]);
-    if ($logged == 1) $message = "User doesn't exist.";
-    if ($logged == 2) $message = "Password is incorrect.";
-    if ($logged == 3) {
+    if ($logged == -1) $message = "User doesn't exist.";
+    else if ($logged == -2) $message = "Password is incorrect.";
+    else {
         $_SESSION["username"]   = $_POST["username"];
+        $_SESSION["user_id"]    = $logged;
         loadPage('../../index.php');
     }
 }
