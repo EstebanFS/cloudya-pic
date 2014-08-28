@@ -101,7 +101,7 @@ if (isset($_GET["logout"])) {
                 <div class="col-lg-12">
                     <div id="success">
                         <?php
-                            if (isset($_SESSION["registered"]) && $_SESSION["registered"] == 3) {
+                            if (isset($_SESSION["registered"]) && $_SESSION["registered"] != -1 && $_SESSION["registered"] != -2) {
                                 echo "<div class=\"alert alert-success\">";
                                 echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
                                 echo "  <strong>".$_SESSION["message"]."</strong>";

@@ -12,7 +12,7 @@ if (!isset($_SESSION["username"])) {
 //Method to receive data of the image and send it to controller
 if (isset($_POST["title"]) && isset($_POST["description"]) &&
     isset($_FILES["image"]) && isset($_POST["tags"])) {
-  $user = $_SESSION["user_id"]; //user_id doesn't already exist in SESSION
+  $user = $_SESSION["user_id"];
   $title = $_POST["title"];
   $desc = $_POST["description"];
   $image = $_FILES["image"];
@@ -58,7 +58,6 @@ if (isset($_POST["title"]) && isset($_POST["description"]) &&
   <!--<div class="image-uploader">
     <input type="file" />
   </div>-->
-
   <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
           <!-- Brand and toggle get grouped for better mobile display -->
@@ -122,16 +121,22 @@ if (isset($_POST["title"]) && isset($_POST["description"]) &&
                   <div id="success">
                     <?php
                       if (isset($added)) {
-                        if ($added) {
+                        if ($added == 3) { //Image uploaded successfully
                           echo "<div class=\"alert alert-success\">";
                           echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
                           echo "  <strong>Image uploaded successfully!</strong>";
                           echo "</div>";
                         }
-                        else {
+                        else if ($added == 2) { //Error encountered while uploading
                           echo "<div class=\"alert alert-danger\">";
                           echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
                           echo "  <strong>Your image couldn't be uploaded, please try again.</strong>";
+                          echo "</div>";
+                        }
+                        else if ($added == 1) {
+                          echo "<div class=\"alert alert-danger\">";
+                          echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                          echo "  <strong>Please select a valid image format.</strong>";
                           echo "</div>";
                         }
                       }

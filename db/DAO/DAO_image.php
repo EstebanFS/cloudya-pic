@@ -4,26 +4,30 @@ include "/../environment.php";
 
 class DAO_image{
 
-  function DAO_add_image($idUser, $title, $description, $img, $hashTagList) {
+  /*
+  Returns: $idImage - Image id in database
+           if couldn't create image returns -1
+  */
+  function DAO_add_image($idUser, $title, $description, $hashTagList) {
     $con = connect();
-    $sql = "INSERT INTO image (title, description, resource) VALUES ('$title','$description','$img')";
+    $sql = "INSERT INTO image (title, description) VALUES ('$title','$description')";
     if (mysql_query($sql)) {  //or die(mysql_error());
-      $result = true;
       $idImage = mysql_insert_id();
+      $result = $idImage;
       foreach ($hashTagList as $hashTag) {
         $idHashTag = DAO_image::DAO_add_hashTag($hashTag);
         if ($idHashTag == -1) {
           disconnect($con);
-          return false;
+          return -1;
         }
-        if (!DAO_image::DAO_add_image_hashTag($idImage,$idHashTag)) {
+        if (!DAO_image::DAO_add_image_hashTag($idImage, $idHashTag)) {
           disconnect($con);
-          return false;
+          return -1;
         }
       }
-      $result &= DAO_image::DAO_add_user_image($idUser,$idImage);
+      if (!DAO_image::DAO_add_user_image($idUser, $idImage)) $result = -1;
     }
-    else $result = false;     
+    else $result = -1;     
     disconnect($con);
     return $result;
   }
@@ -56,7 +60,16 @@ class DAO_image{
     if (mysql_query($sql)) {  //or die(mysql_error());
       $result = true;
     }
-    //else $result = false;    
+    else $result = false;    
+    disconnect($con);
+    return $result;
+  }
+
+  function DAO_set_image_resource($img_id, $resource) {
+    $con = connect();
+    $sql = "UPDATE image SET resource = '$resource' WHERE id='$img_id'";
+    echo $sql."<br>";
+    $result = mysql_query($sql);
     disconnect($con);
     return $result;
   }
