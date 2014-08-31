@@ -1,7 +1,6 @@
 <?php
 
 include "/../environment.php";
-require_once('/../../config/globals.php');
 
 class DAO_image{
 
@@ -23,9 +22,9 @@ class DAO_image{
     return $result;
   }
 
-  function DAO_add_image($idUser, $title, $description, $hashTagList) {
+  function DAO_add_image($idUser, $title, $description, $hashTagList, $extension) {
     $con = connect();
-    $sql = "INSERT INTO image (title, description) VALUES ('$title','$description')";
+    $sql = "INSERT INTO image (title, description, extension) VALUES ('$title','$description', '$extension')";
     if (mysql_query($sql)) {  //or die(mysql_error());
       $idImage = mysql_insert_id();
       $result = $idImage;
@@ -47,8 +46,6 @@ class DAO_image{
     disconnect($con);
     return $result;
   }
-
-
 
   function DAO_add_hashTag($description){
     $con = connect();
@@ -87,6 +84,42 @@ class DAO_image{
     $con = connect();
     $sql = "UPDATE image SET resource = '$resource' WHERE id='$img_id'";
     echo $sql."<br>";
+    $result = mysql_query($sql);
+    disconnect($con);
+    return $result;
+  }
+
+  function DAO_fetch_latest_images($limit) {
+    $con = connect();
+    $sql = "SELECT image.id AS id, image.title AS title, image.description AS description,
+                   image.resource AS resource, image.extension AS extension,
+                   user.username AS username FROM user, user_image, image
+            WHERE  user.id = user_image.user_id AND
+                   image.id = user_image.image_id
+            ORDER BY image.id DESC LIMIT $limit";
+    $arr_res = mysql_query($sql);
+    $error = mysql_error();
+    if ($error != "") $result = -1;
+    else {
+      $result = array();
+      $i = 0;
+      while ($image = mysql_fetch_array($arr_res, MYSQL_BOTH)) {
+        $result[$i]["id"]          = $image["id"];
+        $result[$i]["title"]       = $image["title"];
+        $result[$i]["description"] = $image["description"];
+        $result[$i]["resource"]    = $image["resource"];
+        $result[$i]["extension"]   = $image["extension"];
+        $result[$i]["username"]    = $image["username"];
+        $i++;
+      }
+    }
+    disconnect($con);
+    return $result;
+  }
+
+  function DAO_delete_image($user_id, $image_id) {
+    $con = connect();
+    $sql = "DELETE FROM user_image WHERE image_id = '$image_id' AND user_id = '$user_id'";
     $result = mysql_query($sql);
     disconnect($con);
     return $result;
