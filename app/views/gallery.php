@@ -103,7 +103,7 @@ if (!isset($_SESSION["username"])) {
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2>Uploaded images</h2>
+                    <h2>Your uploaded images</h2>
                     <hr class="star-primary">
                 </div>
             </div>
@@ -166,7 +166,12 @@ if (!isset($_SESSION["username"])) {
             echo "                              </strong>\n";
             echo "                          </li>\n";
             echo "                      </ul>\n";
-            echo "                      <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\"><i class=\"fa fa-times\"></i> Close</button>\n";
+            echo "                      <button type=\"button\" class=\"btn btn-danger\" data-dismiss=\"modal\"><i class=\"fa fa-times\"></i> Close</button>\n";
+            echo "                      &nbsp;&nbsp;&nbsp;";
+            $image_route = "../../filesystem/userimages/".$images[$i]["resource"].".".$images[$i]["extension"];
+            $image_name = $images[$i]["title"];
+            echo "                      <iframe id=\"downloadframe\" style=\"display:none\"></iframe>";
+            echo "                      <a type=\"button\" class=\"btn btn-info\" onclick=\"downloadImage('$image_route', '$image_name')\"><i class=\"fa fa-download\"></i> Download</a>\n";
             echo "                  </div>\n";
             echo "              </div>\n";
             echo "          </div>\n";
@@ -176,6 +181,11 @@ if (!isset($_SESSION["username"])) {
         }
     ?>
 
+    <script type="text/javascript">
+    function downloadImage(route, name) {
+        document.location = "../controllers/download.php?route="+route+"&filename="+name;
+    }
+    </script>
 
     <!-- jQuery Version 1.11.0 -->
     <script src="../assets/js/jquery-1.11.0.js"></script>
