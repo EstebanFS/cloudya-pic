@@ -72,6 +72,9 @@ if (isset($_GET["logout"])) {
                     <?php
                         if (isset($_SESSION["username"])) {
                             echo "<li class=\"page-scroll\">";
+                            echo "  <a href=\"app/views/gallery.php\">My gallery</a>";
+                            echo "</li>";
+                            echo "<li class=\"page-scroll\">";
                             echo "  <a href=\"app/views/upload.php\">Upload</a>";
                             echo "</li>";
                             echo "<li class=\"page-scroll\">";

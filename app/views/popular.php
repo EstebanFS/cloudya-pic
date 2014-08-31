@@ -63,6 +63,9 @@ require_once('/../../config/globals.php');
                     <?php
                         if (isset($_SESSION["username"])) {
                             echo "<li class=\"page-scroll\">";
+                            echo "  <a href=\"gallery.php\">My gallery</a>";
+                            echo "</li>";
+                            echo "<li class=\"page-scroll\">";
                             echo "  <a href=\"upload.php\">Upload</a>";
                             echo "</li>";
                             echo "<li class=\"page-scroll\">";

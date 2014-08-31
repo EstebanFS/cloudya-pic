@@ -18,7 +18,6 @@ if (isset($_POST["password"]) && isset($_POST["username"]) &&
     if ($registered == -1) $message = "User already exists, please try another one.";
     else if ($registered == -2) $message = "Internal error, please try again later.";
     else {
-        echo "Registrado con: ".$registered."<br>";
         $message = "You have registered successfully.";
         $_SESSION["username"]   = $_POST["username"];
         $_SESSION["email"]      = $_POST["email"];

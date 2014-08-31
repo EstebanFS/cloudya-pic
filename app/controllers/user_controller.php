@@ -20,11 +20,20 @@ class user_controller {
               user_id) Logged successfully */
   function login($username, $password) {
     $user_exists = DAO_user::DAO_user_exists($username);
-    if (!$user_exists) return 1;
+    if (!$user_exists) return -1;
     $password = md5($password);
     $logged = DAO_user::DAO_login($username, $password);
     if ($logged != -1) return $logged;
-    else return 2;
+    else return -2;
+  }
+
+  /* Returns: -1) An error was encountered
+               $images) An array with hashed names of the images
+  */
+  function get_user_images($user_id) {
+    $images = DAO_user::fetch_user_images($user_id);
+    if (!is_array($images)) return -1;
+    return $images;
   }
 }
 ?>

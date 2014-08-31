@@ -4,7 +4,7 @@ session_start();
 include "/../controllers/image_controller.php";
 require_once('/../../config/globals.php');
 
-//If session is opened, redirect to index
+//If session is not opened, redirect to index
 if (!isset($_SESSION["username"])) {
     loadPage("../../index.php");
 }
@@ -81,6 +81,9 @@ if (isset($_POST["title"]) && isset($_POST["description"]) &&
                     <a href="popular.php">Popular</a>
                   </li>
                   <li class="page-scroll">
+                    <a href="gallery.php">My gallery</a>
+                  </li>
+                  <li class="page-scroll">
                     <a href="#page-top">Upload</a>
                   </li>
                   <?php
@@ -137,6 +140,13 @@ if (isset($_POST["title"]) && isset($_POST["description"]) &&
                           echo "<div class=\"alert alert-danger\">";
                           echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
                           echo "  <strong>Please select a valid image format.</strong>";
+                          echo "</div>";
+                        }
+                        else if ($added == -1) {
+                          $max_size = ini_get("upload_max_filesize");
+                          echo "<div class=\"alert alert-danger\">";
+                          echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                          echo "  <strong>Image exceeded maximum file size. (".$max_size.")</strong>";
                           echo "</div>";
                         }
                       }

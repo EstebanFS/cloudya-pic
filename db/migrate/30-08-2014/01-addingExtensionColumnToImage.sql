@@ -1,0 +1,1 @@
+ALTER TABLE  `image` ADD  `extension` VARCHAR( 10 ) NOT NULL AFTER  `resource` ;

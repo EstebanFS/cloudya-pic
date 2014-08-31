@@ -8,9 +8,9 @@ class DAO_image{
   Returns: $idImage - Image id in database
            if couldn't create image returns -1
   */
-  function DAO_add_image($idUser, $title, $description, $hashTagList) {
+  function DAO_add_image($idUser, $title, $description, $hashTagList, $extension) {
     $con = connect();
-    $sql = "INSERT INTO image (title, description) VALUES ('$title','$description')";
+    $sql = "INSERT INTO image (title, description, extension) VALUES ('$title','$description', '$extension')";
     if (mysql_query($sql)) {  //or die(mysql_error());
       $idImage = mysql_insert_id();
       $result = $idImage;
