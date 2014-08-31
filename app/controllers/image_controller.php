@@ -41,5 +41,13 @@ class image_controller {
     }
     return 2; //There were problems while trying to add image.
   }
+
+  /* Returns: -1) If encountered some error while trying to fetch images
+              $images) An array with latest images (Default latest 36) */
+  function retrieve_latest_images($limit = 36) {
+    $images = DAO_image::DAO_fetch_latest_images($limit);
+    if (!is_array($images)) return -1;
+    return $images;
+  }
 }
 ?>

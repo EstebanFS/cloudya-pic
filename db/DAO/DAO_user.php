@@ -39,7 +39,7 @@ class DAO_user{
     return $result;
   }
 
-  function fetch_user_images($user_id) {
+  function DAO_fetch_user_images($user_id) {
     $con = connect();
     $sql = "SELECT image.title AS title, image.description AS description,
             image.resource AS resource, image.extension AS extension, 

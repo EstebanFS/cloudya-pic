@@ -83,7 +83,7 @@ if (isset($_POST["password"]) && isset($_POST["username"]) &&
                         <a href="../../index.php">Home</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="popular.php">Popular</a>
+                        <a href="navigate.php">Navigate</a>
                     </li>
                     <li class="page-scroll">
                         <a href="login.php">Sign in</a>

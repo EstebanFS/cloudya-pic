@@ -67,7 +67,7 @@ if (isset($_GET["logout"])) {
                         <a href="#page-top">Home</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="app/views/popular.php">Popular</a>
+                        <a href="app/views/navigate.php">Navigate</a>
                     </li>
                     <?php
                         if (isset($_SESSION["username"])) {

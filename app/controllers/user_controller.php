@@ -31,7 +31,7 @@ class user_controller {
                $images) An array with hashed names of the images
   */
   function get_user_images($user_id) {
-    $images = DAO_user::fetch_user_images($user_id);
+    $images = DAO_user::DAO_fetch_user_images($user_id);
     if (!is_array($images)) return -1;
     return $images;
   }

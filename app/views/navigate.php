@@ -1,14 +1,8 @@
 <?php
 session_start();
 
-include "/../controllers/user_controller.php";
+include "/../controllers/image_controller.php";
 require_once('/../../config/globals.php');
-
-//If session is not opened, redirect to index
-if (!isset($_SESSION["username"])) {
-    loadPage("../../index.php");
-}
-
 ?>
 <html lang="en">
 
@@ -20,7 +14,7 @@ if (!isset($_SESSION["username"])) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>My gallery</title>
+    <title>Latest images</title>
 
     <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link href="../assets/stylesheets/bootstrap.min.css" rel="stylesheet">
@@ -64,13 +58,13 @@ if (!isset($_SESSION["username"])) {
                         <a href="../../index.php">Home</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="popular.php">Popular</a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="#page-top">My gallery</a>
+                        <a href="#page-top">Navigate</a>
                     </li>
                     <?php
                         if (isset($_SESSION["username"])) {
+                            echo "<li class=\"page-scroll\">";
+                            echo "  <a href=\"gallery.php\">My gallery</a>";
+                            echo "</li>";
                             echo "<li class=\"page-scroll\">";
                             echo "  <a href=\"upload.php\">Upload</a>";
                             echo "</li>";
@@ -103,81 +97,97 @@ if (!isset($_SESSION["username"])) {
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2>Your uploaded images</h2>
+                    <h2>Latest images</h2>
                     <hr class="star-primary">
                 </div>
             </div>
             <div class="row">
                 <?php
-                    $images = user_controller::get_user_images($_SESSION["user_id"]);
-                    if (!is_array($images)) {
-                        echo "<div class=\"alert alert-danger\">\n";
-                        echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>\n";
-                        echo "  <strong>A problem was encountered while trying to fetch your images</strong>\n";
-                        echo "</div>\n";
+                $images = image_controller::retrieve_latest_images();
+                if (!is_array($images)) {
+                    echo "<div class=\"alert alert-danger\">\n";
+                    echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>\n";
+                    echo "  <strong>A problem was encountered while trying to fetch the latest images</strong>\n";
+                    echo "</div>\n";
+                }
+                else if (sizeof($images) == 0) {
+                    echo "<div class=\"alert alert-info\">\n";
+                    echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>\n";
+                    echo "  <strong>No one has uploaded an image yet!</strong>\n";
+                    echo "</div>\n";
+                }
+                else {
+                    for ($i = 0; $i < sizeof($images); $i++) {
+                        ?>
+                        <div class="col-sm-2 portfolio-item">
+                            <?php
+                            echo "<a href=\"#portfolioModal".($i + 1)."\" class=\"portfolio-link\" data-toggle=\"modal\">";
+                            ?>
+                            <div class="caption">
+                                <div class="caption-content">
+                                    <i class="fa fa-search-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            <?php
+                            echo "<img src=\"../../filesystem/resizeduserimages/".$images[$i]["resource"]."_resized.png\" class=\"img-responsive\" alt=\"\">";
+                            ?>
+                            </a>
+                        </div>
+                        <?php
                     }
-                    else if (sizeof($images) == 0) {
-                        echo "<div class=\"alert alert-info\">\n";
-                        echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>\n";
-                        echo "  <strong>You haven't uploaded any image yet.</strong>\n";
-                        echo "</div>\n";
-                    }
-                    else {
-                        for ($i = 0; $i < sizeof($images); $i++) {
-                            echo "<div class=\"col-sm-4 portfolio-item\">\n";
-                            echo "  <a href=\"#portfolioModal".($i + 1)."\" class=\"portfolio-link\" data-toggle=\"modal\">\n";
-                            echo "  <div class=\"caption\">\n";
-                            echo "      <div class=\"caption-content\">\n";
-                            echo "          <i class=\"fa fa-search-plus fa-3x\"></i>\n";
-                            echo "      </div>\n";
-                            echo "  </div>\n";
-                            echo "  <img src=\"../../filesystem/resizeduserimages/".$images[$i]["resource"]."_resized.png\" class=\"img-responsive\" alt=\"\">\n";
-                            echo "  </a>\n";
-                            echo "</div>\n";
-                        }
-                    }
+                }
                 ?>
             </div>
         </div>
     </section>
 
+
     <!-- Portfolio Modals -->
     <?php
         for ($i = 0; $i < sizeof($images); $i++) {
-            echo "<div class=\"portfolio-modal modal fade\" id=\"portfolioModal".($i + 1)."\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\n";
-            echo "  <div class=\"modal-content\">\n";
-            echo "      <div class=\"close-modal\" data-dismiss=\"modal\">\n";
-            echo "          <div class=\"lr\">\n";
-            echo "              <div class=\"rl\">\n";
-            echo "               </div>\n";
-            echo "          </div>\n";
-            echo "      </div>\n";
-            echo "      <div class=\"container\">\n";
-            echo "          <div class=\"row\">\n";
-            echo "              <div class=\"col-lg-8 col-lg-offset-2\">\n";
-            echo "                  <div class=\"modal-body\">\n";
-            echo "                      <h2>".$images[$i]["title"]."</h2>\n";
-            echo "                      <hr class=\"star-primary\">\n";
-            echo "                      <img src=\"../../filesystem/userimages/".$images[$i]["resource"].".".$images[$i]["extension"]."\" class=\"img-responsive img-centered\" alt=\"\">\n";
-            echo "                      <p>".$images[$i]["description"]."</p>\n";
-            echo "                      <ul class=\"list-inline item-details\">\n";
-            echo "                          <li>By: \n";
-            echo "                              <strong>".$images[$i]["username"]."\n";
-            echo "                              </strong>\n";
-            echo "                          </li>\n";
-            echo "                      </ul>\n";
-            echo "                      <button type=\"button\" class=\"btn btn-danger\" data-dismiss=\"modal\"><i class=\"fa fa-times\"></i> Close</button>\n";
-            echo "                      &nbsp;&nbsp;&nbsp;";
-            $image_route = "../../filesystem/userimages/".$images[$i]["resource"].".".$images[$i]["extension"];
-            $image_name = $images[$i]["title"];
-            echo "                      <iframe id=\"downloadframe\" style=\"display:none\"></iframe>";
-            echo "                      <a type=\"button\" class=\"btn btn-info\" onclick=\"downloadImage('$image_route', '$image_name')\"><i class=\"fa fa-download\"></i> Download</a>\n";
-            echo "                  </div>\n";
-            echo "              </div>\n";
-            echo "          </div>\n";
-            echo "      </div>\n";
-            echo "  </div>\n";
-            echo "</div>\n";
+            echo "<div class=\"portfolio-modal modal fade\" id=\"portfolioModal".($i + 1)."\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">";
+                ?>
+                <div class="modal-content">
+                    <div class="close-modal" data-dismiss="modal">
+                        <div class="lr">
+                            <div class="rl">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8 col-lg-offset-2">
+                                <div class="modal-body">
+                                    <?php
+                                    echo "<h2>".$images[$i]["title"]."</h2>";
+                                    ?>
+                                    <hr class="star-primary">
+                                    <?php
+                                    echo "<img src=\"../../filesystem/userimages/".$images[$i]["resource"].".".$images[$i]["extension"]."\" class=\"img-responsive img-centered\" alt=\"\">";
+                                    echo "<p>".$images[$i]["description"]."</p>";
+                                    ?>
+                                    <ul class="list-inline item-details">
+                                        <li>By:&nbsp;
+                                            <?php
+                                            echo "<strong>".$images[$i]["username"];
+                                            ?>
+                                            </strong>
+                                        </li>
+                                    </ul>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <iframe id="downloadframe" style="display:none"></iframe>
+                                    <?php
+                                    $image_route = "../../filesystem/userimages/".$images[$i]["resource"].".".$images[$i]["extension"];
+                                    echo "<a type=\"button\" class=\"btn btn-info\" onclick=\"downloadImage('".$image_route."', '".$images[$i]["title"]."')\"><i class=\"fa fa-download\"></i> Download</a>\n";
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
         }
     ?>
 
@@ -186,7 +196,7 @@ if (!isset($_SESSION["username"])) {
         document.location = "../controllers/download.php?route="+route+"&filename="+name;
     }
     </script>
-
+    
     <!-- jQuery Version 1.11.0 -->
     <script src="../assets/js/jquery-1.11.0.js"></script>
 

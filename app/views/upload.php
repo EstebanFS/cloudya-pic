@@ -78,7 +78,7 @@ if (isset($_POST["title"]) && isset($_POST["description"]) &&
                     <a href="../../index.php">Home</a>
                   </li>
                   <li class="page-scroll">
-                    <a href="popular.php">Popular</a>
+                    <a href="navigate.php">Navigate</a>
                   </li>
                   <li class="page-scroll">
                     <a href="gallery.php">My gallery</a>

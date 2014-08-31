@@ -76,7 +76,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                         <a href="../../index.php">Home</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="popular.php">Popular</a>
+                        <a href="navigate.php">Navigate</a>
                     </li>
                     <li class="page-scroll">
                         <a href="#page-top">Sign in</a>

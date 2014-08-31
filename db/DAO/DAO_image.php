@@ -73,5 +73,32 @@ class DAO_image{
     disconnect($con);
     return $result;
   }
+
+  function DAO_fetch_latest_images($limit) {
+    $con = connect();
+    $sql = "SELECT image.title AS title, image.description AS description,
+                   image.resource AS resource, image.extension AS extension,
+                   user.username AS username FROM user, user_image, image
+            WHERE  user.id = user_image.user_id AND
+                   image.id = user_image.image_id
+            ORDER BY image.id DESC LIMIT $limit";
+    $arr_res = mysql_query($sql);
+    $error = mysql_error();
+    if ($error != "") $result = -1;
+    else {
+      $result = array();
+      $i = 0;
+      while ($image = mysql_fetch_array($arr_res, MYSQL_BOTH)) {
+        $result[$i]["title"] = $image["title"];
+        $result[$i]["description"] = $image["description"];
+        $result[$i]["resource"] = $image["resource"];
+        $result[$i]["extension"] = $image["extension"];
+        $result[$i]["username"] = $image["username"];
+        $i++;
+      }
+    }
+    disconnect($con);
+    return $result;
+  }
 }
 ?>
