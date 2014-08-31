@@ -166,12 +166,16 @@ if (!isset($_SESSION["username"])) {
             echo "                              </strong>\n";
             echo "                          </li>\n";
             echo "                      </ul>\n";
-            echo "                      <button type=\"button\" class=\"btn btn-danger\" data-dismiss=\"modal\"><i class=\"fa fa-times\"></i> Close</button>\n";
-            echo "                      &nbsp;&nbsp;&nbsp;";
+            echo "                      <button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\"> Close</button>\n";
+            echo "                      &nbsp;&nbsp;&nbsp;\n";
             $image_route = "../../filesystem/userimages/".$images[$i]["resource"].".".$images[$i]["extension"];
             $image_name = $images[$i]["title"];
             echo "                      <iframe id=\"downloadframe\" style=\"display:none\"></iframe>";
             echo "                      <a type=\"button\" class=\"btn btn-info\" onclick=\"downloadImage('$image_route', '$image_name')\"><i class=\"fa fa-download\"></i> Download</a>\n";
+            echo "                      &nbsp;&nbsp;&nbsp;\n";
+            $image_id = $images[$i]["id"];
+            $user_id = $_SESSION["user_id"];
+            echo "                      <a type=\"button\" class=\"btn btn-danger\" onclick=\"deleteImage('$user_id', '$image_id')\"><i class=\"fa fa-times\"></i> Delete</a>\n";
             echo "                  </div>\n";
             echo "              </div>\n";
             echo "          </div>\n";
@@ -184,6 +188,22 @@ if (!isset($_SESSION["username"])) {
     <script type="text/javascript">
     function downloadImage(route, name) {
         document.location = "../controllers/download.php?route="+route+"&filename="+name;
+    }
+    </script>
+
+    <script type="text/javascript">
+    function deleteImage(user_id, image_id) {
+        if (confirm("Are you sure you want to delete this image?")) {
+            $.ajax ({
+                url: "../controllers/image_controller.php",
+                type: "POST",
+                data: {action: "delete_image", args: [user_id, image_id]},
+                success: function(result) {
+                    if (result == 1) location.reload();
+                    else alert("An error ocurred, please try later");
+                }
+            });
+        }
     }
     </script>
 

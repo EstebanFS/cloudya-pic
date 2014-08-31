@@ -2,6 +2,19 @@
 include "/../../db/DAO/DAO_image.php";
 include "image_resizer_caller.php";
 
+//Getting action from AJAX, deleting image in gallery.php
+if (isset($_POST["action"])) {
+  switch ($_POST["action"]) {
+    case "delete_image":
+      if (isset($_POST["args"])) {
+        $user_id_arg  = $_POST["args"][0];
+        $image_id_arg = $_POST["args"][1];
+        echo image_controller::delete_image($user_id_arg, $image_id_arg);
+      }
+      break;
+  }
+}
+
 class image_controller {
 
   /* Returns: -1) Image size is exceeded
@@ -48,6 +61,14 @@ class image_controller {
     $images = DAO_image::DAO_fetch_latest_images($limit);
     if (!is_array($images)) return -1;
     return $images;
+  }
+
+  /* Returns -1) Error while trying to delete image
+              1) Image deleted successfully */
+  function delete_image($user_id, $image_id) {
+    $deleted = DAO_image::DAO_delete_image($user_id, $image_id);
+    if ($deleted) return 1;
+    else return -1;
   }
 }
 ?>

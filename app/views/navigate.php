@@ -174,12 +174,18 @@ require_once('/../../config/globals.php');
                                             </strong>
                                         </li>
                                     </ul>
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                                     &nbsp;&nbsp;&nbsp;
                                     <iframe id="downloadframe" style="display:none"></iframe>
                                     <?php
                                     $image_route = "../../filesystem/userimages/".$images[$i]["resource"].".".$images[$i]["extension"];
                                     echo "<a type=\"button\" class=\"btn btn-info\" onclick=\"downloadImage('".$image_route."', '".$images[$i]["title"]."')\"><i class=\"fa fa-download\"></i> Download</a>\n";
+                                    if (isset($_SESSION["username"]) && $_SESSION["username"] == $images[$i]["username"]) {
+                                        $image_id = $images[$i]["id"];
+                                        $user_id = $_SESSION["user_id"];
+                                        echo "&nbsp;&nbsp;&nbsp;";
+                                        echo "<a type=\"button\" class=\"btn btn-danger\" onclick=\"deleteImage('$user_id', '$image_id')\"><i class=\"fa fa-times\"></i> Delete</a>\n";
+                                    }
                                     ?>
                                 </div>
                             </div>
@@ -194,6 +200,22 @@ require_once('/../../config/globals.php');
     <script type="text/javascript">
     function downloadImage(route, name) {
         document.location = "../controllers/download.php?route="+route+"&filename="+name;
+    }
+    </script>
+
+    <script type="text/javascript">
+    function deleteImage(user_id, image_id) {
+        if (confirm("Are you sure you want to delete this image?")) {
+            $.ajax ({
+                url: "../controllers/image_controller.php",
+                type: "POST",
+                data: {action: "delete_image", args: [user_id, image_id]},
+                success: function(result) {
+                    if (result == 1) location.reload();
+                    else alert("An error ocurred, please try later");
+                }
+            });
+        }
     }
     </script>
     

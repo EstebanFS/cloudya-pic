@@ -41,7 +41,7 @@ class DAO_user{
 
   function DAO_fetch_user_images($user_id) {
     $con = connect();
-    $sql = "SELECT image.title AS title, image.description AS description,
+    $sql = "SELECT image.id AS id, image.title AS title, image.description AS description,
             image.resource AS resource, image.extension AS extension, 
             user.username AS username FROM user, user_image, image
             WHERE user.id = '$user_id' AND user.id = user_image.user_id
@@ -53,11 +53,12 @@ class DAO_user{
       $result = array();
       $i = 0;
       while ($image = mysql_fetch_array($arr_res, MYSQL_BOTH)) {
-        $result[$i]["title"] = $image["title"];
+        $result[$i]["id"]          = $image["id"];
+        $result[$i]["title"]       = $image["title"];
         $result[$i]["description"] = $image["description"];
-        $result[$i]["resource"] = $image["resource"];
-        $result[$i]["extension"] = $image["extension"];
-        $result[$i]["username"] = $image["username"];
+        $result[$i]["resource"]    = $image["resource"];
+        $result[$i]["extension"]   = $image["extension"];
+        $result[$i]["username"]    = $image["username"];
         $i++;
       }
     }
