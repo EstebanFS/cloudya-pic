@@ -228,8 +228,8 @@ class DAO_image{
   function DAO_filter_image_by_title($text){
     $array_image_title = DAO_image::DAO_filter_image_by_title($text);
     $array_image_hashtag = DAO_image::DAO_filter_image_by_hashTag($text);
-    if(!is_array(DAO_image::DAO_filter_image_by_title($text)))return -1;
-    if(!is_array(DAO_image::DAO_filter_image_by_hashTag($text)))return -1;
+    if(!is_array($array_image_title))return -1;
+    if(!is_array($array_image_hashtag))return -1;
     $size = count($array_image_title);
     $result = array();
     for($i=0; $i< $size; $i++){
