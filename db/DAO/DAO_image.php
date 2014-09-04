@@ -224,5 +224,34 @@ class DAO_image{
     disconnect($con);
     return $result;
   }
+
+  function DAO_filter_image_by_title($text){
+    $array_image_title = DAO_image::DAO_filter_image_by_title($text);
+    $array_image_hashtag = DAO_image::DAO_filter_image_by_hashTag($text);
+    if(!is_array(DAO_image::DAO_filter_image_by_title($text)))return -1;
+    if(!is_array(DAO_image::DAO_filter_image_by_hashTag($text)))return -1;
+    $size = count($array_image_title);
+    $result = array();
+    for($i=0; $i< $size; $i++){
+      $index = $array_image_title[$i]["id"];
+      $result[$index]["id"]          = $array_image_title[$i]["id"];
+      $result[$index]["title"]       = $array_image_title[$i]["title"];
+      $result[$index]["description"] = $array_image_title[$i]["description"];
+      $result[$index]["resource"]    = $array_image_title[$i]["resource"];
+      $result[$index]["extension"]   = $array_image_title[$i]["extension"];
+      $result[$index]["username"]    = $array_image_title[$i]["username"];
+    }
+    $size = count($array_image_hashtag);
+    for($i=0; $i< $size; $i++){
+      $index = $array_image_hashtag[$i]["id"];
+      $result[$index]["id"]          = $array_image_hashtag[$i]["id"];
+      $result[$index]["title"]       = $array_image_hashtag[$i]["title"];
+      $result[$index]["description"] = $array_image_hashtag[$i]["description"];
+      $result[$index]["resource"]    = $array_image_hashtag[$i]["resource"];
+      $result[$index]["extension"]   = $array_image_hashtag[$i]["extension"];
+      $result[$index]["username"]    = $array_image_hashtag[$i]["username"];
+    }
+    return $result;
+  }
 }
 ?>
