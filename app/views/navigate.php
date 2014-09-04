@@ -3,6 +3,13 @@ session_start();
 
 include "/../controllers/image_controller.php";
 require_once('/../../config/globals.php');
+
+if (isset($_POST["search"]) && isset($_POST["filter"])) {
+    $filter = $_POST["filter"];
+    $text = $_POST["search"];
+    $filtered = image_controller::filter_images($filter, $text);
+}
+
 ?>
 <html lang="en">
 
@@ -95,6 +102,35 @@ require_once('/../../config/globals.php');
     <!-- Portfolio Grid Section -->
     <section id="portfolio">
         <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Search an image</h2>
+                    <hr class="star-primary">
+                </div>
+            </div>
+            <div class="row">
+                <form action="navigate.php" name="searchform" method="POST" novalidate>
+                    <div class="col-lg-2 text-center">
+                        <p>Search by</p>
+                        <select name="filter" class="form-control">
+                            <option value="all">All</option>
+                            <option value="tag">Tag</option>
+                            <option value="title">Title</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-8 text-center">
+                        <p>&nbsp;</p>
+                        <input name="search" type="search" class="form-control" placeholder="Search images" required data-validation-required-message="Please enter a text to search.">
+                        <p class="help-block text-danger"></p>
+                    </div>
+                    <div class="col-lg-2 text-center">
+                        <p><font size="2">&nbsp;</font></p>
+                        <form>
+                            <button type="submit" class="btn btn-success btn-lg">Search</button>
+                        </form>
+                    </div>
+                </form>
+            </div>
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2>Latest images</h2>

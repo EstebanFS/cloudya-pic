@@ -70,5 +70,21 @@ class image_controller {
     if ($deleted) return 1;
     else return -1;
   }
+
+  /* Returns -1) Wrror while trying to filter images
+              $filtered) Array with filtered images */
+  function filter_images($filter, $text) {
+    if ($filter == "tag") {
+      $filtered = DAO_image::DAO_filter_image_by_hashTag($text);
+    }
+    else if ($filter == "title") {
+      $filtered = DAO_image::DAO_filter_image_by_title($text);
+    }
+    else {
+      $filtered = DAO_image::DAO_filter_image_by_hashTag($text);
+    }
+    if (!is_array($filtered)) return -1;
+    else return $filtered;
+  }
 }
 ?>

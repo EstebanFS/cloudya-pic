@@ -127,7 +127,7 @@ class DAO_image{
 
     function DAO_select_hashtag_id($hashtag){
     $con = connect();
-    $sql = "SELECT id FROM hashtag WHERE description like '$hashtag'";
+    $sql = "SELECT id FROM hashtag WHERE description like '%$hashtag%'";
     $arr_res = mysql_query($sql); // or die(mysql_error());
     $result = -1;
     if (mysql_num_rows($arr_res) == 1) {
@@ -138,10 +138,8 @@ class DAO_image{
     return $result;
   }
 
-
-
   function DAO_filter_image_by_hashTag($hashtag) {
-    $hashtag_id = DAO_select_hashtag_id($hashtag);
+    $hashtag_id = DAO_image::DAO_select_hashtag_id($hashtag);
     $con = connect();
     $sql = "SELECT image.id AS id, image.title AS title, image.description AS description,
             image.resource AS resource, image.extension AS extension, 
@@ -170,7 +168,7 @@ class DAO_image{
 
   function DAO_select_image_id_by_title($title){
     $con = connect();
-    $sql = "SELECT id FROM image WHERE title like '$title'";
+    $sql = "SELECT id AS id FROM image WHERE title LIKE '%$title%'";
     $arr_res = mysql_query($sql);
     $error = mysql_error();
     if ($error != "") $result = -1;
@@ -178,7 +176,7 @@ class DAO_image{
       $result = array();
       $i = 0;
       while ($image = mysql_fetch_array($arr_res, MYSQL_BOTH)) {
-        $result[$i]["id"]          = $image["id"];
+        $result[$i]["id"] = $image["id"];
         $i++;
       }
     }
@@ -187,17 +185,18 @@ class DAO_image{
   }
 
   function DAO_filter_image_by_title($title) {
-    $array_image_id = DAO_select_image_id_by_title($title);
+    $array_image_id = DAO_image::DAO_select_image_id_by_title($title);
     $con = connect();
     $size = count($array_image_id);
     $result = array();
     $i = 0;
     for($x = 0; $x < $size; $x++){
-      $id_image_by_title = $array_image_id[$x];
+      $id_image_by_title = $array_image_id[$x]["id"];
       $sql = "SELECT image.id AS id, image.title AS title, image.description AS description,
               image.resource AS resource, image.extension AS extension, 
               user.username AS username, user_image.user_id FROM image, user_image, user
-              WHERE image.id = $id_image_by_title AND user_image.image_id = image.id AND user.id = user_image.user_id";
+              WHERE image.id = '$id_image_by_title' AND user_image.image_id = image.id AND
+              user.id = user_image.user_id";
       $arr_res = mysql_query($sql);
       $error = mysql_error();
       if ($error != "") $result = -1;
