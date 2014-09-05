@@ -141,11 +141,20 @@ class DAO_image{
   function DAO_filter_image_by_hashTag($hashtag) {
     $hashtag_id = DAO_image::DAO_select_hashtag_id($hashtag);
     $con = connect();
-    $sql = "SELECT image.id AS id, image.title AS title, image.description AS description,
-            image.resource AS resource, image.extension AS extension, 
-            user.username AS username FROM hashtag, image_hashtag, image, user_image, user
-            WHERE hashtag.id = $hashtag_id AND image_hashtag.hashtag_id = hashtag.id AND
-            image_hashtag.image_id = image.id AND user_image.image_id = image.id";
+    $sql = "SELECT image.id, image.title, image.description, image.resource, image.extension, inter.username\n"
+    . "FROM image\n"
+    . "JOIN (\n"
+    . "\n"
+    . "SELECT id, username, email, image_id, hashtag_id\n"
+    . "FROM user\n"
+    . "JOIN (\n"
+    . "\n"
+    . "SELECT image_hashtag.image_id, user_id, hashtag_id\n"
+    . "FROM image_hashtag\n"
+    . "JOIN user_image ON user_image.image_id = image_hashtag.image_id\n"
+    . ") AS ihu ON user.id = ihu.user_id\n"
+    . "AND hashtag_id ='$hashtag_id'\n"
+    . ") AS inter ON inter.image_id = image.id LIMIT 0, 30 ";
     $arr_res = mysql_query($sql);
     $error = mysql_error();
     if ($error != "") $result = -1;

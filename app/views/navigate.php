@@ -7,7 +7,8 @@ require_once('/../../config/globals.php');
 if (isset($_POST["search"]) && isset($_POST["filter"])) {
     $filter = $_POST["filter"];
     $text = $_POST["search"];
-    $filtered = image_controller::filter_images($filter, $text);
+    if ($text != "") $filtered = image_controller::filter_images($filter, $text);
+    else unset($filtered);
 }
 
 ?>
@@ -131,6 +132,50 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
                     </div>
                 </form>
             </div>
+            <br>
+            <br>
+            <br>
+            <div class="row">
+            <?php 
+            if (isset($filtered) && is_array($filtered)) {
+                if (!is_array($filtered)) {
+                    echo "<div class=\"alert alert-danger\">\n";
+                    echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>\n";
+                    echo "  <strong>An error has ocurred while trying to filter images, please try again later.</strong>\n";
+                    echo "</div>\n";
+                }
+                else if (sizeof($filtered) == 0) {
+                    echo "<div class=\"alert alert-info\">\n";
+                    echo "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>\n";
+                    echo "  <strong>No results found.</strong>\n";
+                    echo "</div>\n";
+                }
+                else {
+                    for ($i = 0; $i < sizeof($filtered); $i++) {
+                        ?>
+                        <div class="col-sm-4 portfolio-item">
+                            <?php
+                            echo "<a href=\"#portfolioModalFiltered".($i + 1)."\" class=\"portfolio-link\" data-toggle=\"modal\">";
+                            ?>
+                            <div class="caption">
+                                <div class="caption-content">
+                                    <i class="fa fa-search-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            <?php
+                            echo "<img src=\"../../filesystem/resizeduserimages/".$filtered[$i]["resource"]."_resized.png\" class=\"img-responsive\" alt=\"\">";
+                            ?>
+                            </a>
+                        </div>
+                        <?php
+                    }
+                }
+            }
+            ?>
+            <?php
+            if (!isset($filtered) || (isset($filtered) && !is_array($filtered))) {
+            ?>
+            </div>
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2>Latest images</h2>
@@ -138,7 +183,7 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
                 </div>
             </div>
             <div class="row">
-                <?php
+            <?php
                 $images = image_controller::retrieve_latest_images();
                 if (!is_array($images)) {
                     echo "<div class=\"alert alert-danger\">\n";
@@ -172,14 +217,72 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
                         <?php
                     }
                 }
-                ?>
+            }
+            ?>
             </div>
         </div>
     </section>
 
 
-    <!-- Portfolio Modals -->
+    <!-- Portfolio Modals filtered -->
     <?php
+    if (isset($filtered) && is_array($filtered)) {
+        for ($i = 0; $i < sizeof($filtered); $i++) {
+            echo "<div class=\"portfolio-modal modal fade\" id=\"portfolioModalFiltered".($i + 1)."\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">";
+                ?>
+                <div class="modal-content">
+                    <div class="close-modal" data-dismiss="modal">
+                        <div class="lr">
+                            <div class="rl">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8 col-lg-offset-2">
+                                <div class="modal-body">
+                                    <?php
+                                    echo "<h2>".$filtered[$i]["title"]."</h2>";
+                                    ?>
+                                    <hr class="star-primary">
+                                    <?php
+                                    echo "<img src=\"../../filesystem/userimages/".$filtered[$i]["resource"].".".$filtered[$i]["extension"]."\" class=\"img-responsive img-centered\" alt=\"\">";
+                                    echo "<p>".$filtered[$i]["description"]."</p>";
+                                    ?>
+                                    <ul class="list-inline item-details">
+                                        <li>By:&nbsp;
+                                            <?php
+                                            echo "<strong>".$filtered[$i]["username"];
+                                            ?>
+                                            </strong>
+                                        </li>
+                                    </ul>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <iframe id="downloadframe" style="display:none"></iframe>
+                                    <?php
+                                    $image_route = "../../filesystem/userimages/".$filtered[$i]["resource"].".".$filtered[$i]["extension"];
+                                    echo "<a type=\"button\" class=\"btn btn-info\" onclick=\"downloadImage('".$image_route."', '".$filtered[$i]["title"]."')\"><i class=\"fa fa-download\"></i> Download</a>\n";
+                                    if (isset($_SESSION["username"]) && $_SESSION["username"] == $filtered[$i]["username"]) {
+                                        $image_id = $filtered[$i]["id"];
+                                        $user_id = $_SESSION["user_id"];
+                                        echo "&nbsp;&nbsp;&nbsp;";
+                                        echo "<a type=\"button\" class=\"btn btn-danger\" onclick=\"deleteImage('$user_id', '$image_id')\"><i class=\"fa fa-times\"></i> Delete</a>\n";
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+    }
+    ?>
+    <!-- Portfolio Modals latests -->
+    <?php
+    if (!isset($filtered) || (isset($filtered) && !is_array($filtered))) {
         for ($i = 0; $i < sizeof($images); $i++) {
             echo "<div class=\"portfolio-modal modal fade\" id=\"portfolioModal".($i + 1)."\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">";
                 ?>
@@ -231,6 +334,7 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
             </div>
             <?php
         }
+    }
     ?>
 
     <script type="text/javascript">
