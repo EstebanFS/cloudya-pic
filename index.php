@@ -56,7 +56,7 @@ if (isset($_GET["logout"])) {
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#page-top">CloudYa-<span style="color:#18bc9c">Pic</span></a>
+                <a class="navbar-brand" href="#page-top">CloudYa-<span style="color: #18BC9C;">Pic</span></a>
                 <!--<img src="app/assets/images/logo.png" class="img-responsive" alt="logo">-->
             </div>
 
@@ -114,7 +114,7 @@ if (isset($_GET["logout"])) {
                             }
                         ?>
                     </div>
-                    <img class="img-responsive" src="app/assets/images/profile.png" alt="">
+                    <img class="img-responsive" src="app/assets/images/logo.png" alt="">
                     <div class="intro-text">
                         <span class="name">Take your photos.<br>upload your life.</span>
                         <hr class="star-light">
@@ -126,8 +126,8 @@ if (isset($_GET["logout"])) {
     </header>
 
     <!-- Footer -->
-    <!--<footer class="text-center">
-        <div class="footer-above">
+    <footer class="text-center">
+        <!--<div class="footer-above">
             <div class="container">
                 <div class="row">
                     <div class="footer-col col-md-4">
@@ -160,17 +160,17 @@ if (isset($_GET["logout"])) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
         <div class="footer-below">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        Copyright &copy; Your Website 2014
+                        Copyright &copy; CloudYa-Pic - 2014
                     </div>
                 </div>
             </div>
         </div>
-    </footer>-->
+    </footer>
 
     <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
     <div class="scroll-top page-scroll visible-xs visble-sm">

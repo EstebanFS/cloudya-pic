@@ -57,7 +57,7 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.php">CloudYa-<span style="color:#18bc9c">Pic</span></a>
+                <a class="navbar-brand" href="../../index.php">CloudYa-<span style="color: #18BC9C;">Pic</span></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -377,7 +377,6 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
 
     <script type="text/javascript">
     function downloadImage(route, name) {
-        alert("hola");
         document.location = "../controllers/download.php?route="+route+"&filename="+name;
     }
     </script>

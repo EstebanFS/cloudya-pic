@@ -138,19 +138,25 @@ class DAO_image{
 
   function DAO_filter_image_by_hashTag($hashtag) {
     $con = connect();
-    $sql = "SELECT inter3.id2 AS id, inter3.title, inter3.description, inter3.resource, inter3.extension, username, inter3.tag
+    $sql = "SELECT inter5.id, inter5.title, inter5.description, inter5.resource, inter5.extension, inter5.tag, user.username
             FROM user
-            JOIN (SELECT inter2.id AS id2, inter2.title, inter2.description, inter2.resource, inter2.extension, user_id, inter2.tag
+            JOIN (SELECT inter4.id, inter4.title, inter4.description, inter4.resource, inter4.extension, inter4.tag, user_image.user_id
                   FROM user_image
-                  JOIN (SELECT id, title, image.description, resource, extension, inter.description AS tag
-                        FROM image
-                        JOIN (SELECT image_id, hashtag_id, hashtag.description
+                  JOIN (SELECT inter3.id, inter3.title, inter3.description, inter3.resource, inter3.extension, hashtag.description AS tag
+                        FROM hashtag
+                        JOIN (SELECT inter2.id, inter2.title, inter2.description, inter2.resource, inter2.extension, image_hashtag.hashtag_id
                               FROM image_hashtag
-                              JOIN hashtag ON hashtag.id = image_hashtag.hashtag_id
-                                          AND description LIKE  '%$hashtag%'
-                              ) AS inter ON inter.image_id = image.id
-                        ) AS inter2 ON image_id = inter2.id
-                  ) AS inter3 ON id = inter3.user_id";
+                              JOIN (SELECT id, title, image.description, resource, extension, hashtag_id
+                                    FROM image
+                                    JOIN (SELECT image_id, hashtag_id, hashtag.description
+                                          FROM image_hashtag
+                                          JOIN hashtag ON hashtag.id = image_hashtag.hashtag_id
+                                                      AND description LIKE  '%$hashtag%'
+                                    ) AS inter ON id = inter.image_id
+                              ) AS inter2 ON image_hashtag.image_id = inter2.id
+                        ) AS inter3 ON inter3.hashtag_id = hashtag.id
+                  ) AS inter4 ON inter4.id = user_image.image_id
+            ) AS inter5 ON inter5.user_id = user.id";
     $arr_res = mysql_query($sql);
     $error = mysql_error();
     if ($error != "") $result = -1;
