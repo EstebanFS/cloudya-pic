@@ -253,23 +253,5 @@ class DAO_image{
     }
     return $result;
   }
-
-  function get_hashtag_image_by_id($image_id){
-    $con = connect();
-    $sql = "SELECT hashtag.description FROM image_hashtag, hashtag WHERE image_hashtag.image_id = '$image_id' AND hashtag.id = hashtag.id";
-    $arr_res = mysql_query($sql);
-    $error = mysql_error();
-    if ($error != "") $result = -1;
-    else {
-      $result = array();
-      $i = 0;
-      while ($image = mysql_fetch_array($arr_res, MYSQL_BOTH)) {
-        $result[$i]["id"] = $image["id"];
-        $i++;
-      }
-    }
-    disconnect($con);
-    return $result; 
-  }
 }
 ?>
