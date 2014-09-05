@@ -56,11 +56,18 @@ class image_controller {
   }
 
   /* Returns: -1) If encountered some error while trying to fetch images
-              $images) An array with latest images (Default latest 36) */
+              $result) An array with latest images (Default latest 36) */
   function retrieve_latest_images($limit = 36) {
     $images = DAO_image::DAO_fetch_latest_images($limit);
-    if (!is_array($images)) return -1;
-    return $images;
+    if (is_array($images)) {
+      $i = 0;
+      $result = array();
+      foreach ($images as $image) {
+        $result[$i++] = $image;
+      }
+      return $result;
+    }
+    else return -1;
   }
 
   /* Returns -1) Error while trying to delete image
@@ -71,8 +78,8 @@ class image_controller {
     else return -1;
   }
 
-  /* Returns -1) Wrror while trying to filter images
-              $filtered) Array with filtered images */
+  /* Returns -1) Error while trying to filter images
+              $result) Array with filtered images */
   function filter_images($filter, $text) {
     if ($filter == "tag") {
       $filtered = DAO_image::DAO_filter_image_by_hashTag($text);
@@ -81,10 +88,17 @@ class image_controller {
       $filtered = DAO_image::DAO_filter_image_by_title($text);
     }
     else {
-      $filtered = DAO_image::DAO_filter_image_by_hashTag($text);
+      $filtered = DAO_image::DAO_filter_image_by_all($text);
     }
-    if (!is_array($filtered)) return -1;
-    else return $filtered;
+    if (is_array($filtered)) {
+      $i = 0;
+      $result = array();
+      foreach ($filtered as $image) {
+        $result[$i++] = $image;
+      }
+      return $result;
+    }
+    else return -1;
   }
 }
 ?>

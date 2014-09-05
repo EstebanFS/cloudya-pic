@@ -28,12 +28,19 @@ class user_controller {
   }
 
   /* Returns: -1) An error was encountered
-               $images) An array with hashed names of the images
+               $result) An array with hashed names of the images
   */
   function get_user_images($user_id) {
     $images = DAO_user::DAO_fetch_user_images($user_id);
-    if (!is_array($images)) return -1;
-    return $images;
+    if (is_array($images)) {
+      $i = 0;
+      $result = array();
+      foreach ($images as $image) {
+        $result[$i++] = $image;
+      }
+      return $result;
+    }
+    else return -1;
   }
 }
 ?>

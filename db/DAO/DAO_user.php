@@ -1,6 +1,6 @@
 <?php
 
-include "/../environment.php";
+include_once("/../environment.php");
 require_once('/../../config/globals.php');
 
 class DAO_user{
@@ -41,25 +41,37 @@ class DAO_user{
 
   function DAO_fetch_user_images($user_id) {
     $con = connect();
-    $sql = "SELECT image.id AS id, image.title AS title, image.description AS description,
-            image.resource AS resource, image.extension AS extension, 
-            user.username AS username FROM user, user_image, image
-            WHERE user.id = '$user_id' AND user.id = user_image.user_id
-            AND image.id = user_image.image_id";
+    $sql = "SELECT inter3.id, inter3.title, inter3.description, inter3.resource, inter3.extension, inter3.username, hashtag.description AS tag
+            FROM hashtag
+            JOIN (SELECT inter2.id, inter2.title, inter2.description, inter2.resource, inter2.extension, inter2.username, hashtag_id
+                  FROM image_hashtag
+                  JOIN (SELECT id, title, description, resource, extension, username
+                        FROM image
+                        JOIN (SELECT username, image_id
+                              FROM user
+                              JOIN user_image ON user_id = id
+                                             AND id =  '$user_id'
+                        ) AS inter ON id = inter.image_id
+                  ) AS inter2 ON image_id = inter2.id
+            ) AS inter3 ON inter3.hashtag_id = hashtag.id";
     $arr_res = mysql_query($sql);
     $error = mysql_error();
     if ($error != "") $result = -1;
     else {
       $result = array();
-      $i = 0;
       while ($image = mysql_fetch_array($arr_res, MYSQL_BOTH)) {
-        $result[$i]["id"]          = $image["id"];
-        $result[$i]["title"]       = $image["title"];
-        $result[$i]["description"] = $image["description"];
-        $result[$i]["resource"]    = $image["resource"];
-        $result[$i]["extension"]   = $image["extension"];
-        $result[$i]["username"]    = $image["username"];
-        $i++;
+        $index = $image["id"];
+        if (!isset($result[$index])) {
+          $result[$index] = array();
+          $result[$index]["tags"] = array();
+        }
+        $result[$index]["id"]          = $image["id"];
+        $result[$index]["title"]       = $image["title"];
+        $result[$index]["description"] = $image["description"];
+        $result[$index]["resource"]    = $image["resource"];
+        $result[$index]["extension"]   = $image["extension"];
+        $result[$index]["username"]    = $image["username"];
+        array_push($result[$index]["tags"], $image["tag"]);
       }
     }
     disconnect($con);

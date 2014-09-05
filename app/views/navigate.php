@@ -34,6 +34,7 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
     <link href="../assets/fonts/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="../assets/stylesheets/tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -198,7 +199,9 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
                     echo "</div>\n";
                 }
                 else {
+                    //$tagsLatests = array();
                     for ($i = 0; $i < sizeof($images); $i++) {
+                        //$tagsLatests[$i] = image_controller::get_image_tags($images[$i]["id"]);
                         ?>
                         <div class="col-sm-2 portfolio-item">
                             <?php
@@ -248,6 +251,23 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
                                     <?php
                                     echo "<img src=\"../../filesystem/userimages/".$filtered[$i]["resource"].".".$filtered[$i]["extension"]."\" class=\"img-responsive img-centered\" alt=\"\">";
                                     echo "<p>".$filtered[$i]["description"]."</p>";
+                                    if (is_array($filtered[$i]["tags"])) {
+                                        if (sizeof($filtered[$i]["tags"]) > 0) {
+                                        ?>
+                                        <div class="bootstrap-tagsinput">
+                                            <?php
+                                            for ($j = 0; $j < sizeof($filtered[$i]["tags"]); $j++) {
+                                                $tagName = $filtered[$i]["tags"][$j];
+                                                echo "<span class=\"tag label label-info\">$tagName</span>";
+                                            }
+                                            ?>
+                                        </div>
+                                        <?php
+                                        }
+                                        else {
+                                            echo "<p>This image doesn't contain any tag</p>";
+                                        }
+                                    }
                                     ?>
                                     <ul class="list-inline item-details">
                                         <li>By:&nbsp;
@@ -304,6 +324,24 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
                                     <?php
                                     echo "<img src=\"../../filesystem/userimages/".$images[$i]["resource"].".".$images[$i]["extension"]."\" class=\"img-responsive img-centered\" alt=\"\">";
                                     echo "<p>".$images[$i]["description"]."</p>";
+                                    //$tags = image_controller::get_image_tags($images[$i]["id"]);
+                                    if (is_array($images[$i]["tags"])) {
+                                        if (sizeof($images[$i]["tags"]) > 0) {
+                                        ?>
+                                        <div class="bootstrap-tagsinput">
+                                            <?php
+                                            for ($j = 0; $j < sizeof($images[$i]["tags"]); $j++) {
+                                                $tagName = $images[$i]["tags"][$j];
+                                                echo "<span class=\"tag label label-info\">$tagName</span>";
+                                            }
+                                            ?>
+                                        </div>
+                                        <?php
+                                        }
+                                        else {
+                                            echo "<p>This image doesn't contain any tag</p>";
+                                        }
+                                    }
                                     ?>
                                     <ul class="list-inline item-details">
                                         <li>By:&nbsp;
@@ -339,6 +377,7 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
 
     <script type="text/javascript">
     function downloadImage(route, name) {
+        alert("hola");
         document.location = "../controllers/download.php?route="+route+"&filename="+name;
     }
     </script>
@@ -358,7 +397,7 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
         }
     }
     </script>
-    
+
     <!-- jQuery Version 1.11.0 -->
     <script src="../assets/js/jquery-1.11.0.js"></script>
 
@@ -376,6 +415,7 @@ if (isset($_POST["search"]) && isset($_POST["filter"])) {
 
     <!-- Custom Theme JavaScript -->
     <script src="../assets/js/freelancer.js"></script>
+    <script src="../assets/stylesheets/tagsinput/bootstrap-tagsinput.js"></script>
 </body>
 
 </html>

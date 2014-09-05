@@ -2,6 +2,7 @@
 session_start();
 
 include "/../controllers/user_controller.php";
+include "/../controllers/image_controller.php";
 require_once('/../../config/globals.php');
 
 //If session is not opened, redirect to index
@@ -32,6 +33,7 @@ if (!isset($_SESSION["username"])) {
     <link href="../assets/fonts/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="../assets/stylesheets/tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -123,7 +125,9 @@ if (!isset($_SESSION["username"])) {
                         echo "</div>\n";
                     }
                     else {
+                        //$tags = array();
                         for ($i = 0; $i < sizeof($images); $i++) {
+                            //$tags[$i] = image_controller::get_image_tags($images[$i]["id"]);
                             echo "<div class=\"col-sm-4 portfolio-item\">\n";
                             echo "  <a href=\"#portfolioModal".($i + 1)."\" class=\"portfolio-link\" data-toggle=\"modal\">\n";
                             echo "  <div class=\"caption\">\n";
@@ -160,6 +164,19 @@ if (!isset($_SESSION["username"])) {
             echo "                      <hr class=\"star-primary\">\n";
             echo "                      <img src=\"../../filesystem/userimages/".$images[$i]["resource"].".".$images[$i]["extension"]."\" class=\"img-responsive img-centered\" alt=\"\">\n";
             echo "                      <p>".$images[$i]["description"]."</p>\n";
+                                        if (is_array($images[$i]["tags"])) {
+                                            if (sizeof($images[$i]["tags"]) > 0) {
+                                                echo "<div class=\"bootstrap-tagsinput\">";
+                                                for ($j = 0; $j < sizeof($images[$i]["tags"]); $j++) {
+                                                    $tagName = $images[$i]["tags"][$j];
+                                                    echo "<span class=\"tag label label-info\">$tagName</span>";
+                                                }
+                                                echo "</div>";
+                                            }
+                                            else {
+                                                echo "<p>This image doesn't contain any tag</p>";
+                                            }
+                                        }
             echo "                      <ul class=\"list-inline item-details\">\n";
             echo "                          <li>By: \n";
             echo "                              <strong>".$images[$i]["username"]."\n";
@@ -224,6 +241,7 @@ if (!isset($_SESSION["username"])) {
 
     <!-- Custom Theme JavaScript -->
     <script src="../assets/js/freelancer.js"></script>
+    <script src="../assets/stylesheets/tagsinput/bootstrap-tagsinput.js"></script>
 </body>
 
 </html>

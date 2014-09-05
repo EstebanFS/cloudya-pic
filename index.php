@@ -126,7 +126,7 @@ if (isset($_GET["logout"])) {
     </header>
 
     <!-- Footer -->
-    <footer class="text-center">
+    <!--<footer class="text-center">
         <div class="footer-above">
             <div class="container">
                 <div class="row">
@@ -170,7 +170,7 @@ if (isset($_GET["logout"])) {
                 </div>
             </div>
         </div>
-    </footer>
+    </footer>-->
 
     <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
     <div class="scroll-top page-scroll visible-xs visble-sm">

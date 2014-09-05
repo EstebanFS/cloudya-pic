@@ -1,6 +1,6 @@
 <?php
 
-include "/../environment.php";
+include_once("/../environment.php");
 
 class DAO_image{
 
@@ -91,28 +91,39 @@ class DAO_image{
 
   function DAO_fetch_latest_images($limit) {
     $con = connect();
-    $sql = "SELECT image.id AS id, image.title AS title, image.description AS description,
-                   image.resource AS resource, image.extension AS extension,
-                   user.username AS username FROM user, user_image, image
-            WHERE  user.id = user_image.user_id AND
-                   image.id = user_image.image_id
-            ORDER BY image.id DESC LIMIT $limit";
+    $sql = "SELECT inter3.id, inter3.title, inter3.description, inter3.resource, inter3.extension, inter3.tag, username
+            FROM user
+            JOIN (SELECT inter2.id, inter2.title, inter2.description, inter2.resource, inter2.extension, inter2.tag, user_id
+                  FROM user_image
+                  JOIN (SELECT inter.id, title, inter.description, resource, extension, hashtag.description AS tag
+                        FROM hashtag
+                        JOIN (SELECT id, title, description, resource, extension, hashtag_id
+                              FROM image
+                              JOIN image_hashtag ON image_id = id
+                        ) AS inter ON inter.hashtag_id = hashtag.id
+                  ) AS inter2 ON image_id = inter2.id
+            ) AS inter3 ON user.id = inter3.user_id
+            ORDER BY inter3.id DESC 
+            LIMIT $limit";
     $arr_res = mysql_query($sql);
     $error = mysql_error();
     if ($error != "") $result = -1;
     else {
-      $result = array();
-      $i = 0;
       while ($image = mysql_fetch_array($arr_res, MYSQL_BOTH)) {
-        $result[$i]["id"]          = $image["id"];
-        $result[$i]["title"]       = $image["title"];
-        $result[$i]["description"] = $image["description"];
-        $result[$i]["resource"]    = $image["resource"];
-        $result[$i]["extension"]   = $image["extension"];
-        $result[$i]["username"]    = $image["username"];
-        $i++;
+        $index = $image["id"];
+        if (!isset($result[$index])) {
+          $result[$index] = array();
+          $result[$index]["tags"] = array();
+        }
+        $result[$index]["id"]          = $image["id"];
+        $result[$index]["title"]       = $image["title"];
+        $result[$index]["description"] = $image["description"];
+        $result[$index]["resource"]    = $image["resource"];
+        $result[$index]["extension"]   = $image["extension"];
+        $result[$index]["username"]    = $image["username"];
+        array_push($result[$index]["tags"], $image["tag"]);
       }
-    }
+    } 
     disconnect($con);
     return $result;
   }
@@ -125,131 +136,120 @@ class DAO_image{
     return $result;
   }
 
-    function DAO_select_hashtag_id($hashtag){
-    $con = connect();
-    $sql = "SELECT id FROM hashtag WHERE description like '%$hashtag%'";
-    $arr_res = mysql_query($sql); // or die(mysql_error());
-    $result = -1;
-    if (mysql_num_rows($arr_res) == 1) {
-      $result = mysql_fetch_array($arr_res);
-      $result = $result["id"];     
-    }
-    disconnect($con);
-    return $result;
-  }
-
   function DAO_filter_image_by_hashTag($hashtag) {
-    $hashtag_id = DAO_image::DAO_select_hashtag_id($hashtag);
     $con = connect();
-    $sql = "SELECT image.id, image.title, image.description, image.resource, image.extension, inter.username\n"
-    . "FROM image\n"
-    . "JOIN (\n"
-    . "\n"
-    . "SELECT id, username, email, image_id, hashtag_id\n"
-    . "FROM user\n"
-    . "JOIN (\n"
-    . "\n"
-    . "SELECT image_hashtag.image_id, user_id, hashtag_id\n"
-    . "FROM image_hashtag\n"
-    . "JOIN user_image ON user_image.image_id = image_hashtag.image_id\n"
-    . ") AS ihu ON user.id = ihu.user_id\n"
-    . "AND hashtag_id ='$hashtag_id'\n"
-    . ") AS inter ON inter.image_id = image.id LIMIT 0, 30 ";
+    $sql = "SELECT inter3.id2 AS id, inter3.title, inter3.description, inter3.resource, inter3.extension, username, inter3.tag
+            FROM user
+            JOIN (SELECT inter2.id AS id2, inter2.title, inter2.description, inter2.resource, inter2.extension, user_id, inter2.tag
+                  FROM user_image
+                  JOIN (SELECT id, title, image.description, resource, extension, inter.description AS tag
+                        FROM image
+                        JOIN (SELECT image_id, hashtag_id, hashtag.description
+                              FROM image_hashtag
+                              JOIN hashtag ON hashtag.id = image_hashtag.hashtag_id
+                                          AND description LIKE  '%$hashtag%'
+                              ) AS inter ON inter.image_id = image.id
+                        ) AS inter2 ON image_id = inter2.id
+                  ) AS inter3 ON id = inter3.user_id";
     $arr_res = mysql_query($sql);
     $error = mysql_error();
     if ($error != "") $result = -1;
     else {
       $result = array();
-      $i = 0;
       while ($image = mysql_fetch_array($arr_res, MYSQL_BOTH)) {
-        $result[$i]["id"]          = $image["id"];
-        $result[$i]["title"]       = $image["title"];
-        $result[$i]["description"] = $image["description"];
-        $result[$i]["resource"]    = $image["resource"];
-        $result[$i]["extension"]   = $image["extension"];
-        $result[$i]["username"]    = $image["username"];
-        $i++;
-      }
-    }
-    disconnect($con);
-    return $result;
-  }
-
-  function DAO_select_image_id_by_title($title){
-    $con = connect();
-    $sql = "SELECT id AS id FROM image WHERE title LIKE '%$title%'";
-    $arr_res = mysql_query($sql);
-    $error = mysql_error();
-    if ($error != "") $result = -1;
-    else {
-      $result = array();
-      $i = 0;
-      while ($image = mysql_fetch_array($arr_res, MYSQL_BOTH)) {
-        $result[$i]["id"] = $image["id"];
-        $i++;
-      }
-    }
-    disconnect($con);
-    return $result;
-  }
-
-  function DAO_filter_image_by_title($title) {
-    $array_image_id = DAO_image::DAO_select_image_id_by_title($title);
-    $con = connect();
-    $size = count($array_image_id);
-    $result = array();
-    $i = 0;
-    for($x = 0; $x < $size; $x++){
-      $id_image_by_title = $array_image_id[$x]["id"];
-      $sql = "SELECT image.id AS id, image.title AS title, image.description AS description,
-              image.resource AS resource, image.extension AS extension, 
-              user.username AS username, user_image.user_id FROM image, user_image, user
-              WHERE image.id = '$id_image_by_title' AND user_image.image_id = image.id AND
-              user.id = user_image.user_id";
-      $arr_res = mysql_query($sql);
-      $error = mysql_error();
-      if ($error != "") $result = -1;
-      else {
-        while ($image = mysql_fetch_array($arr_res, MYSQL_BOTH)) {
-          $result[$i]["id"]          = $image["id"];
-          $result[$i]["title"]       = $image["title"];
-          $result[$i]["description"] = $image["description"];
-          $result[$i]["resource"]    = $image["resource"];
-          $result[$i]["extension"]   = $image["extension"];
-          $result[$i]["username"]    = $image["username"];
-          $i++;
+        $index = $image["id"];
+        if (!isset($result[$index])) {
+          $result[$index] = array();
+          $result[$index]["tags"] = array();
         }
+        $result[$index]["id"]          = $image["id"];
+        $result[$index]["title"]       = $image["title"];
+        $result[$index]["description"] = $image["description"];
+        $result[$index]["resource"]    = $image["resource"];
+        $result[$index]["extension"]   = $image["extension"];
+        $result[$index]["username"]    = $image["username"];
+        array_push($result[$index]["tags"], $image["tag"]);
       }
     } 
     disconnect($con);
     return $result;
   }
 
-  function DAO_filter_image_by_title($text){
+  function DAO_filter_image_by_title($title) {
+    $con = connect();
+    $result = array();
+    $sql = "SELECT inter4.id, inter4.title, inter4.description, inter4.resource, inter4.extension, inter4.tag, user.username
+            FROM user
+            JOIN (SELECT inter3.id, inter3.title, inter3.description, inter3.resource, inter3.extension, inter3.tag, user_image.user_id
+                  FROM user_image
+                  JOIN (SELECT inter2.id AS id, title, inter2.description, resource, extension, hashtag.description AS tag
+                        FROM hashtag
+                        JOIN (SELECT id, title, description, resource, extension, hashtag_id
+                              FROM image_hashtag
+                              JOIN (SELECT * 
+                                    FROM image
+                                    WHERE title LIKE  '%$title%'
+                              ) AS inter ON id = image_id
+                        ) AS inter2 ON hashtag.id = hashtag_id
+                  ) AS inter3 ON inter3.id = user_image.image_id
+            ) AS inter4 ON inter4.user_id = user.id";
+    $arr_res = mysql_query($sql);
+    $error = mysql_error();
+    if ($error != "") $result = -1;
+    else {
+      $result = array();
+      while ($image = mysql_fetch_array($arr_res, MYSQL_BOTH)) {
+        $index = $image["id"];
+        if (!isset($result[$index])) {
+          $result[$index] = array();
+          $result[$index]["tags"] = array();
+        }
+        $result[$index]["id"]          = $image["id"];
+        $result[$index]["title"]       = $image["title"];
+        $result[$index]["description"] = $image["description"];
+        $result[$index]["resource"]    = $image["resource"];
+        $result[$index]["extension"]   = $image["extension"];
+        $result[$index]["username"]    = $image["username"];
+        array_push($result[$index]["tags"], $image["tag"]);
+      }
+    } 
+    disconnect($con);
+    return $result;
+  }
+
+  function DAO_filter_image_by_all($text){
     $array_image_title = DAO_image::DAO_filter_image_by_title($text);
     $array_image_hashtag = DAO_image::DAO_filter_image_by_hashTag($text);
     if(!is_array($array_image_title))return -1;
     if(!is_array($array_image_hashtag))return -1;
-    $size = count($array_image_title);
     $result = array();
-    for($i=0; $i< $size; $i++){
-      $index = $array_image_title[$i]["id"];
-      $result[$index]["id"]          = $array_image_title[$i]["id"];
-      $result[$index]["title"]       = $array_image_title[$i]["title"];
-      $result[$index]["description"] = $array_image_title[$i]["description"];
-      $result[$index]["resource"]    = $array_image_title[$i]["resource"];
-      $result[$index]["extension"]   = $array_image_title[$i]["extension"];
-      $result[$index]["username"]    = $array_image_title[$i]["username"];
+    foreach ($array_image_title as $image) {
+      $index = $image["id"];
+      if (!isset($result[$index])) {
+        $result[$index] = array();
+        $result[$index]["tags"] = array();
+      }
+      $result[$index]["id"]          = $image["id"];
+      $result[$index]["title"]       = $image["title"];
+      $result[$index]["description"] = $image["description"];
+      $result[$index]["resource"]    = $image["resource"];
+      $result[$index]["extension"]   = $image["extension"];
+      $result[$index]["username"]    = $image["username"];
+      $result[$index]["tags"]        = $image["tags"];
     }
-    $size = count($array_image_hashtag);
-    for($i=0; $i< $size; $i++){
-      $index = $array_image_hashtag[$i]["id"];
-      $result[$index]["id"]          = $array_image_hashtag[$i]["id"];
-      $result[$index]["title"]       = $array_image_hashtag[$i]["title"];
-      $result[$index]["description"] = $array_image_hashtag[$i]["description"];
-      $result[$index]["resource"]    = $array_image_hashtag[$i]["resource"];
-      $result[$index]["extension"]   = $array_image_hashtag[$i]["extension"];
-      $result[$index]["username"]    = $array_image_hashtag[$i]["username"];
+    foreach($array_image_hashtag as $image) {
+      $index = $image["id"];
+      if (!isset($result[$index])) {
+        $result[$index] = array();
+        $result[$index]["tags"] = array();
+      }
+      $result[$index]["id"]          = $image["id"];
+      $result[$index]["title"]       = $image["title"];
+      $result[$index]["description"] = $image["description"];
+      $result[$index]["resource"]    = $image["resource"];
+      $result[$index]["extension"]   = $image["extension"];
+      $result[$index]["username"]    = $image["username"];
+      $result[$index]["tags"]        = $image["tags"];
     }
     return $result;
   }
